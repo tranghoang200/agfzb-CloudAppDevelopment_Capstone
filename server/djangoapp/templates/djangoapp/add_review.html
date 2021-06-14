@@ -12,5 +12,57 @@
 </head>
     <body>
     <!--Add review form here -->
+    <div class="container-fluid">
+    {% if user.is_authenticated %}
+    <h1>Create Review</h1>
+    <form action="{% url 'djangoapp:addreview' dealer_id %}" method="post">
+    {% csrf_token %}
+    <div class="row justify-content-center">
+        <div class="col-6 text-left">
+        <div class="form-group">
+            <label for="userNameInput">Your Name</label>
+            <input type="text" class="form-control" id="userNameInput" placeholder="Enter Your Name..." name="newreview_name" value="{{user.last_name}} {{user.first_name}}" required>
+        </div>
+        <div class="form-group">
+            <label for="reviewInput">Review</label>
+            <textarea class="form-control" id="reviewInput" placeholder="Enter Review..." name="newreview_review" rows="2" required></textarea>
+        </div>
+        <div class="form-group">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="purchaseInput" name="newreview_purchase">
+                <label class="custom-control-label" for="purchaseInput">Car Was Purchased</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="purchaseDateInput">Purchase Date</label>
+            <input type="date" class="form-control" id="purchaseDateInput" name="newreview_purchase_date">
+        </div>
+        <div class="form-group">
+            <label for="carInput">Car</label>
+            <select id="carInput" class="custom-select" name="newreview_car" required>
+                {% for car in cars %}
+                    <option value={{car.id}}>{{car.make.name}} {{car.name}} {{ car.year|date:"Y" }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% if error_message %}
+        <div class="alert alert-warning my-3">
+            {{ error_message }}
+        </div>
+        {% elif success_message %}
+        <div class="alert alert-success my-3">
+            {{ success_message }}
+        </div>
+        {% endif %}
+        <button class="btn btn-primary" type="submit">Save review</button>
+    </div>
+    </div>
+    </form>
+    {% else %}
+    <h1>Who are you?</h1>
+    <p class="lead">You are not authenticated, that's why you see this message.</p>
+    <p class="lead">Login and you will be able to add review.</p>
+    {% endif %}
+</div>
     </body>
 </html>
